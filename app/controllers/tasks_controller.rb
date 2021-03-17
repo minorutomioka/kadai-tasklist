@@ -1,12 +1,13 @@
 class TasksController < ApplicationController
     before_action :require_user_logged_in
+    before_action :correct_user, only: [:destroy]
+    before_action :user_task, only: [:show, :edit, :update, :destroy]
     
   def index
        @tasks = current_user.tasks.order(id: :desc).page(params[:page])
   end
 
   def show
-    user_task
   end
 
   def new
@@ -25,11 +26,9 @@ class TasksController < ApplicationController
   end
 
   def edit
-    user_task
   end
 
   def update
-    user_task
     if @task.update(task_params)
       flash[:success]='タスクが更新されました。'
       redirect_to @task
@@ -40,7 +39,6 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    user_task
     @task.destroy
     
     flash[:success]='タスクが削除されました。'
